@@ -1,5 +1,6 @@
 'use strict';
 
+const nodemailer = require('nodemailer');
 const Telegram = require('telegram-node-bot');
 
 const Message = require('./message.model');
@@ -18,6 +19,7 @@ class messageController extends TelegramBaseController {
                 error: 'sorry, wrong input',
                 validator: (message, callback) => {
                     if(message.text) {
+                        console.log(message.chat.id);
                         callback(true, message.text) //you must pass the result also
                         return
                     }
@@ -52,24 +54,34 @@ class messageController extends TelegramBaseController {
 }
 
         $.runForm(form, (result) => {
-            const message = new Message({
-                                name: result.name,
-                                phone: result.phone,
-                                request:  result.request
-                              });
-            message.save(function (err, message) {
-                                 if (err) return console.error(err);
-                                 console.log(message);
-                                 $.sendMessage("Your request has been submitted");
-                               });
-
-            console.log(result)
+          var request = result.name + "\n\n" + result.phone + "\n\n" + result.request;
+          var transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'youremail@gmail.com',
+            pass: 'your password'
+          },
+          tls: {
+                  rejectUnauthorized: false
+              }
         });
-          /**  let msg = $.message.text.split(' ').slice(1).join(' ');
 
+        var mailOptions = {
+          from: 'Datateam Request',
+          to: 'tywotaiwo@gmail.com',
+          subject: 'New Request',
+          text: request
+        };
 
-                  console.log("done");
-               **/
+        transporter.sendMail(mailOptions, function(error, info){
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+        });
+
             }
 
     get routes() {

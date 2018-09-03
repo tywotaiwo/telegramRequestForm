@@ -12,6 +12,7 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "mongoose": "^5.2.12",
+    "nodemailer": "^4.6.8",
     "nodemon": "^1.18.4",
     "telegram-node-bot": "^4.0.5"
   }
